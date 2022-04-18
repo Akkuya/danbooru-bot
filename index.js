@@ -73,7 +73,7 @@ client.on('messageCreate', async(message) => {
         const helpEmbed = new MessageEmbed()
             .setColor('#0099ff')
             .setTitle('Help Page')
-            .setDescription('Command Usage. Prefix is d?')
+            .setDescription('Command Usage. Prefix is d?.')
             .addFields({
                 name: 'd?setdelay *<duration>*',
                 value: 'Sets how often the bot will check for new posts. Duration must be in milliseconds.\nExample: `d?setdelay 10000`'
