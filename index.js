@@ -111,7 +111,7 @@ const main = async() => {
         myRequest = await myRequest.json()
         console.log(myRequest[0].post_id)
         if (categories[i].id != myRequest[0].post_id) {
-            client.channels.fetch('868311048439103531')
+            client.channels.fetch('965731160867094568')
                 .then(channel => channel.send(`New post under ${categories[i].name}: https://danbooru.donmai.us/posts/${myRequest[0].post_id} `))
             categories[i].id = myRequest[0].post_id
         } else {
