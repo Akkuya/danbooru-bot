@@ -18,13 +18,13 @@ client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}`)
 })
 
-let delay = 5000
+let delay = 2000
 client.on('messageCreate', async(message) => {
     if (!message.content.startsWith('d?')) { return }
     const commandBody = message.content.slice(2)
     const args = commandBody.split(" ")
     const cmd = args.shift().toLowerCase()
-
+    if (message.author.tag != 'Akkuya#7703') { return }
     switch (cmd) {
         case 'setdelay':
             clearInterval(interval)
@@ -52,8 +52,9 @@ client.on('messageCreate', async(message) => {
             }
             message.reply(`Watching these categories: \`${tags}\` `)
             break;
-        case 'removetags':
+        case 'removetag':
             let removed = false;
+
             for (let i = 0; i < categories.length; i++) {
                 if (categories[i].name == args[0]) {
                     categories.splice(categories[i], 1)
@@ -93,15 +94,7 @@ client.on('messageCreate', async(message) => {
     }
 
 });
-let categories = [{
-        "name": "syringe",
-        "last_id": 120893
-    },
-    {
-        "name": "skirt",
-        "last_id": 120398
-    }
-]
+let categories = []
 const main = async() => {
     for (let i = 0; i < categories.length; i++) {
         let myRequest = await fetch(`https://danbooru.donmai.us/post_versions.json?search[added_tags_include_all]=${categories[i].name}&limit=2`).catch(() => {
@@ -109,9 +102,15 @@ const main = async() => {
             return
         })
         myRequest = await myRequest.json()
-        console.log(myRequest[0].post_id)
+        try {
+            console.log(myRequest[0].post_id)
+        } catch (error) {
+            console.log(`No posts found under ${categories[i].name}`)
+            continue
+        }
+
         if (categories[i].id != myRequest[0].post_id) {
-            client.channels.fetch('965731160867094568')
+            client.channels.fetch('868311048439103531')
                 .then(channel => channel.send(`New post under ${categories[i].name}: https://danbooru.donmai.us/posts/${myRequest[0].post_id} `))
             categories[i].id = myRequest[0].post_id
         } else {
