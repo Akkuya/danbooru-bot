@@ -37,10 +37,10 @@ client.on('messageCreate', async(message) => {
 
             for (let i = 0; i < args.length; i++) {
                 categories.push({
-                    "name": args[i],
+                    "name": args[i].toLowerCase(),
                     "last_id": 1
                 })
-                string += args[i] + ", "
+                string += args[i].toLowerCase() + ", "
             }
 
             message.reply(`Added ${string} to the list of watched tags!`)
