@@ -24,7 +24,7 @@ client.on('messageCreate', async(message) => {
     const commandBody = message.content.slice(2)
     const args = commandBody.split(" ")
     const cmd = args.shift().toLowerCase()
-    if (message.author.tag != 'Akkuya#7703') { return }
+
     switch (cmd) {
         case 'setdelay':
             clearInterval(interval)
