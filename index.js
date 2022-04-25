@@ -22,7 +22,7 @@ client.on('ready', () => {
 
 let delay = 30000
 client.on('messageCreate', async(message) => {
-    if (!message.content.startsWith('t?')) { return }
+    if (!message.content.startsWith('d?')) { return }
     const commandBody = message.content.slice(2)
     const args = commandBody.split(" ")
     const cmd = args.shift().toLowerCase()
