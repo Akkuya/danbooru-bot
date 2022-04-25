@@ -1,6 +1,8 @@
 import { Client, Intents, MessageEmbed } from "discord.js";
 import dotenv from 'dotenv'
 import fetch from 'node-fetch'
+import fs from 'fs'
+
 
 dotenv.config()
 
@@ -18,9 +20,9 @@ client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}`)
 })
 
-let delay = 2000
+let delay = 30000
 client.on('messageCreate', async(message) => {
-    if (!message.content.startsWith('d?')) { return }
+    if (!message.content.startsWith('t?')) { return }
     const commandBody = message.content.slice(2)
     const args = commandBody.split(" ")
     const cmd = args.shift().toLowerCase()
@@ -36,10 +38,28 @@ client.on('messageCreate', async(message) => {
             let string = ''
 
             for (let i = 0; i < args.length; i++) {
-                categories.push({
+                const addition = {
                     "name": args[i].toLowerCase(),
-                    "last_id": 1
-                })
+                    "id": 1
+                }
+
+                fs.readFile("./tags.json", "utf8", function readFileCallback(err, data) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        var obj = JSON.parse(data); //now converting it to an object
+                        obj.categories.push(addition); //adding the data
+                        var json = JSON.stringify(obj, null, 2); //converting it back to json
+                        fs.writeFile("./tags.json", json, "utf8", (err) => {
+                            if (err) {
+                                console.log(err);
+                            } else {
+
+                            }
+                        });
+                    }
+                });
+
                 string += args[i].toLowerCase() + ", "
             }
 
@@ -57,7 +77,22 @@ client.on('messageCreate', async(message) => {
 
             for (let i = 0; i < categories.length; i++) {
                 if (categories[i].name == args[0]) {
-                    categories.splice(categories[i], 1)
+                    fs.readFile("./tags.json", "utf8", function readFileCallback(err, data) {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            var obj = JSON.parse(data); //now converting it to an object
+                            obj.categories.splice(i, 1) //adding the data
+                            var json = JSON.stringify(obj, null, 2); //converting it back to json
+                            fs.writeFile("./tags.json", json, "utf8", (err) => {
+                                if (err) {
+                                    console.log(err);
+                                } else {
+                                    console.log("Done");
+                                }
+                            });
+                        }
+                    });
                     removed = true
                 }
             }
@@ -94,8 +129,10 @@ client.on('messageCreate', async(message) => {
     }
 
 });
-let categories = []
+
 const main = async() => {
+    let rawdata = fs.readFileSync('tags.json');
+    let categories = JSON.parse(rawdata).categories;
     for (let i = 0; i < categories.length; i++) {
         let myRequest = await fetch(`https://danbooru.donmai.us/post_versions.json?search[added_tags_include_all]=${categories[i].name}&limit=2`).catch(() => {
             console.error;
@@ -108,11 +145,26 @@ const main = async() => {
             console.log(`No posts found under ${categories[i].name}`)
             continue
         }
-
+        console.log(`Checking ${categories[i].name}...`)
         if (categories[i].id != myRequest[0].post_id) {
-            client.channels.fetch('965731160867094568')
+            client.channels.fetch('868311048439103531')
                 .then(channel => channel.send(`New post under ${categories[i].name}: https://danbooru.donmai.us/posts/${myRequest[0].post_id} `))
-            categories[i].id = myRequest[0].post_id
+            fs.readFile("./tags.json", "utf8", function readFileCallback(err, data) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    var obj = JSON.parse(data); //now converting it to an object
+                    obj.categories[i].id = myRequest[0].post_id //adding the data
+                    var json = JSON.stringify(obj, null, 2); //converting it back to json
+                    fs.writeFile("./tags.json", json, "utf8", (err) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log("Done");
+                        }
+                    });
+                }
+            });
         } else {
             console.log(`No new posts under \`${categories[i].name}\``)
         }
