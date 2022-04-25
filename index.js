@@ -147,7 +147,7 @@ const main = async() => {
         }
         console.log(`Checking ${categories[i].name}...`)
         if (categories[i].id != myRequest[0].post_id) {
-            client.channels.fetch('868311048439103531')
+            client.channels.fetch('965731160867094568')
                 .then(channel => channel.send(`New post under ${categories[i].name}: https://danbooru.donmai.us/posts/${myRequest[0].post_id} `))
             fs.readFile("./tags.json", "utf8", function readFileCallback(err, data) {
                 if (err) {
