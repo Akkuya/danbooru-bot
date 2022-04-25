@@ -67,6 +67,8 @@ client.on('messageCreate', async(message) => {
             break;
         case 'list':
             let tags = ''
+            let rawdata = fs.readFileSync('tags.json');
+            let categories = JSON.parse(rawdata).categories;
             for (let i = 0; i < categories.length; i++) {
                 tags += categories[i].name + " "
             }
