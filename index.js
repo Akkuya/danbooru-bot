@@ -140,7 +140,10 @@ const main = async() => {
             console.error;
             return
         })
-        myRequest = await myRequest.json()
+        myRequest = await myRequest.json().catch(() => {
+            console.error
+            return
+        })
         try {
             console.log(myRequest[0].post_id)
         } catch (error) {
